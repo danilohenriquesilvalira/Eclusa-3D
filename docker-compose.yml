@@ -1,0 +1,7 @@
+services:
+  eclusa:
+    build: .
+    container_name: eclusa_simulator
+    restart: unless-stopped
+    ports:
+      - "8081:80"
