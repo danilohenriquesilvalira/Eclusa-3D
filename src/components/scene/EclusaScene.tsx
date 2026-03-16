@@ -9,6 +9,7 @@ import { DownstreamGate, type DownstreamGateHandle } from './DownstreamGate'
 import { UpstreamGate, type UpstreamGateHandle } from './UpstreamGate'
 import { Boat, type BoatHandle } from './Boat'
 import { TrafficLights } from './TrafficLights'
+import { Sailor, type SailorHandle } from './Sailor'
 import { LOW_Y, HIGH_Y } from '../../constants'
 import { useSimStore } from '../../store/simulation'
 import { runSubida, runDescida } from '../../lib/sequences'
@@ -57,8 +58,8 @@ function Lighting() {
       />
       <directionalLight color={0x80b0ff} intensity={1.8} position={[25, 20, 15]} />
       <directionalLight color={0xb0c8e8} intensity={1.2} position={[10, 5, 25]} />
-      <pointLight ref={wBounceRef} color={0x29b6f6} intensity={7.0} distance={40} position={[0, LOW_Y + 0.5, 0]} />
-      <pointLight color={0x4fc3f7} intensity={3.0} distance={25} position={[0, LOW_Y + 3, 0]} />
+      <pointLight ref={wBounceRef} color={0x29b6f6} intensity={1.5} distance={40} position={[0, LOW_Y + 0.5, 0]} />
+      <pointLight color={0x4fc3f7} intensity={1.0} distance={25} position={[0, LOW_Y + 3, 0]} />
       {/* Front fill — illuminates downstream gate from camera side */}
       <directionalLight color={0xc0d8f0} intensity={2.5} position={[0, 8, 50]} />
     </>
@@ -89,13 +90,14 @@ function SceneSetup() {
   const downRef = useRef<DownstreamGateHandle>(null)
   const upRef = useRef<UpstreamGateHandle>(null)
   const boatRef = useRef<BoatHandle>(null)
+  const sailorRef = useRef<SailorHandle>(null)
   const store = useSimStore()
   const hasSetRunner = useRef(false)
 
   if (!hasSetRunner.current) {
     hasSetRunner.current = true
     store.setRunner(async (dir) => {
-      const refs = { downstream: downRef, upstream: upRef, boat: boatRef }
+      const refs = { downstream: downRef, upstream: upRef, boat: boatRef, sailor: sailorRef }
       if (dir === 'up') await runSubida(refs, store)
       else await runDescida(refs, store)
     })
@@ -121,6 +123,7 @@ function SceneSetup() {
       <UpstreamGate ref={upRef} />
       <Boat ref={boatRef} />
       <TrafficLights />
+      <Sailor ref={sailorRef} />
     </>
   )
 }

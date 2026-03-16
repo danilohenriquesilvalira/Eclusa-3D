@@ -142,6 +142,7 @@ export const Boat = forwardRef<BoatHandle>((_, ref) => {
     groupRef.current.position.y  = surf + Math.sin(tRef.current * 1.05) * 0.042
     groupRef.current.rotation.z  = Math.sin(tRef.current * 0.80) * 0.014
     groupRef.current.rotation.x  = Math.cos(tRef.current * 0.65) * 0.006
+
   })
 
   useImperativeHandle(ref, () => ({

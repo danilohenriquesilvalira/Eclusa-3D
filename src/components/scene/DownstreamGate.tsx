@@ -1,4 +1,5 @@
 import React, { useRef, forwardRef, useImperativeHandle } from 'react'
+import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import gsap from 'gsap'
 import { OA, FLOOR_Y, Z_JUS, GHj, GDj, CW } from '../../constants'
@@ -10,7 +11,7 @@ export interface DownstreamGateHandle {
 
 const LW = CW / 2
 
-function GateLeaf({ side }: { side: 1 | -1 }) {
+function GateLeaf({ side, rodRef }: { side: 1 | -1; rodRef: React.RefObject<THREE.Mesh> }) {
   const PW = LW + 0.06
   const cx = side * PW / 2
   const NC = 6
@@ -132,7 +133,7 @@ function GateLeaf({ side }: { side: 1 | -1 }) {
           <cylinderGeometry args={[0.24, 0.24, 0.22, 12]} />
           <meshStandardMaterial color={0x363c42} roughness={0.75} metalness={0.68} />
         </mesh>
-        <mesh castShadow position={[0, 0, 1.85 / 2]}>
+        <mesh ref={rodRef} castShadow position={[0, 0, 1.85 / 2]}>
           <cylinderGeometry args={[0.08, 0.08, 1.85, 10]} />
           <meshStandardMaterial color={0xc0c8d0} roughness={0.06} metalness={0.98} />
         </mesh>
@@ -148,6 +149,21 @@ function GateLeaf({ side }: { side: 1 | -1 }) {
 export const DownstreamGate = forwardRef<DownstreamGateHandle>((_, ref) => {
   const leftRef = useRef<THREE.Group>(null)
   const rightRef = useRef<THREE.Group>(null)
+  const leftRodRef = useRef<THREE.Mesh>(null)
+  const rightRodRef = useRef<THREE.Mesh>(null)
+
+  useFrame(() => {
+    const angle = leftRef.current?.rotation.y ?? 0
+    const t = Math.min(1, Math.abs(angle) / OA)
+    const rodScaleY = 1.4 - 0.8 * t
+    const rodPosY = 0.925 - (1.85 * rodScaleY) / 2
+    for (const rodRef of [leftRodRef, rightRodRef]) {
+      const rod = rodRef.current
+      if (!rod) continue
+      rod.scale.y = rodScaleY
+      rod.position.y = rodPosY
+    }
+  })
 
   useImperativeHandle(ref, () => ({
     open: () => new Promise<void>(res => {
@@ -163,10 +179,10 @@ export const DownstreamGate = forwardRef<DownstreamGateHandle>((_, ref) => {
   return (
     <group>
       <group ref={leftRef} position={[-CW / 2, FLOOR_Y + GHj / 2, Z_JUS]}>
-        <GateLeaf side={1} />
+        <GateLeaf side={1} rodRef={leftRodRef} />
       </group>
       <group ref={rightRef} position={[CW / 2, FLOOR_Y + GHj / 2, Z_JUS]}>
-        <GateLeaf side={-1} />
+        <GateLeaf side={-1} rodRef={rightRodRef} />
       </group>
     </group>
   )

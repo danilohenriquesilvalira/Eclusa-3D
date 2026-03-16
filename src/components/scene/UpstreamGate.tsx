@@ -129,7 +129,7 @@ export const UpstreamGate = forwardRef<UpstreamGateHandle>((_, ref) => {
         ))}
       </group>
 
-      {/* ── Guide rails ── */}
+      {/* ── Gate groove guide rails ── */}
       {([-1, 1] as (1 | -1)[]).map(sx => {
         const xG = sx * (CW / 2 + WT * 0.52)
         return (
@@ -142,65 +142,127 @@ export const UpstreamGate = forwardRef<UpstreamGateHandle>((_, ref) => {
               <boxGeometry args={[0.16, WALL_H + 7, 0.16]} />
               <meshStandardMaterial color={0x707878} roughness={0.42} metalness={0.85} />
             </mesh>
+            {/* Base anchor block */}
+            <mesh castShadow receiveShadow position={[xG, FLOOR_Y + 0.30, Z_MON]}>
+              <boxGeometry args={[0.80, 0.60, 0.80]} />
+              <meshStandardMaterial color={0x606870} roughness={0.88} metalness={0.06} />
+            </mesh>
           </group>
         )
       })}
 
-      {/* ── Winch towers ── */}
+      {/* Gate sill threshold beam */}
+      <mesh castShadow receiveShadow position={[0, FLOOR_Y + 0.20, Z_MON]}>
+        <boxGeometry args={[VW + 0.30, 0.40, GDv + 0.40]} />
+        <meshStandardMaterial color={0x606870} roughness={0.88} metalness={0.06} />
+      </mesh>
+
+      {/* ── Gate posts / winch towers (H-frame) ── */}
       {([-1, 1] as (1 | -1)[]).map(sx => {
-        const xt = sx * (VW / 2 - 0.30)
+        const xt      = sx * (VW / 2 - 0.30)
+        const zFr     = Z_MON + 0.32
+        const zBk     = Z_MON - 0.60
+        const zMid    = (zFr + zBk) / 2
+        const depthZ  = zFr - zBk
+        const towerH  = twH + 0.40
+        const towerCY = WALL_TOP + towerH / 2
+        const towerTop = WALL_TOP + towerH
         return (
           <group key={sx}>
-            <mesh castShadow position={[xt, twY, Z_MON]}>
-              <boxGeometry args={[0.32, twH, 0.32]} />
+            {/* Concrete base pedestal */}
+            <mesh castShadow position={[xt, WALL_TOP + 0.20, zMid]}>
+              <boxGeometry args={[1.22, 0.40, depthZ + 0.50]} />
+              <meshStandardMaterial color={0x606870} roughness={0.88} metalness={0.06} />
+            </mesh>
+            {/* Front column (gate side) */}
+            <mesh castShadow position={[xt, towerCY, zFr]}>
+              <boxGeometry args={[0.36, towerH, 0.36]} />
               <meshStandardMaterial color={0x585f65} roughness={0.52} metalness={0.82} />
             </mesh>
-            <mesh castShadow position={[sx * (VW / 4), twY, Z_MON]} rotation={[0, 0, sx * 0.42]}>
-              <boxGeometry args={[0.16, twH * 0.75, 0.16]} />
+            {/* Back column (counterweight side) */}
+            <mesh castShadow position={[xt, towerCY, zBk]}>
+              <boxGeometry args={[0.36, towerH, 0.36]} />
               <meshStandardMaterial color={0x585f65} roughness={0.52} metalness={0.82} />
             </mesh>
-            <mesh castShadow position={[xt, WALL_TOP + 0.55, Z_MON]}>
-              <boxGeometry args={[0.60, 0.30, 0.60]} />
-              <meshStandardMaterial color={0x5c6268} roughness={0.96} metalness={0.04} />
-            </mesh>
-            <mesh castShadow position={[xt, twY + twH / 2 - 0.08, Z_MON]}>
-              <boxGeometry args={[0.88, 0.60, 0.60]} />
+            {/* Horizontal crossbars (5 evenly spaced) */}
+            {Array.from({ length: 5 }, (_, i) => {
+              const y = WALL_TOP + 0.40 + i * (towerH - 0.40) / 4
+              return (
+                <mesh key={i} castShadow position={[xt, y, zMid]}>
+                  <boxGeometry args={[0.28, 0.22, depthZ + 0.36]} />
+                  <meshStandardMaterial color={0x4e5560} roughness={0.60} metalness={0.82} />
+                </mesh>
+              )
+            })}
+            {/* X-brace diagonal pairs (2 panels) */}
+            {([0, 1] as number[]).map(p => {
+              const y0 = WALL_TOP + 0.40 + p * (towerH - 0.40) / 2
+              const y1 = WALL_TOP + 0.40 + (p + 1) * (towerH - 0.40) / 2
+              const yC = (y0 + y1) / 2
+              const dy = y1 - y0
+              const diagL = Math.sqrt(depthZ * depthZ + dy * dy)
+              const angX = Math.atan2(depthZ, dy)
+              return [
+                <mesh key={`da${p}`} castShadow position={[xt, yC, zMid]} rotation={[angX, 0, 0]}>
+                  <boxGeometry args={[0.14, diagL, 0.14]} />
+                  <meshStandardMaterial color={0x4e5560} roughness={0.60} metalness={0.82} />
+                </mesh>,
+                <mesh key={`db${p}`} castShadow position={[xt, yC, zMid]} rotation={[-angX, 0, 0]}>
+                  <boxGeometry args={[0.14, diagL, 0.14]} />
+                  <meshStandardMaterial color={0x4e5560} roughness={0.60} metalness={0.82} />
+                </mesh>
+              ]
+            })}
+            {/* Top cap beam */}
+            <mesh castShadow position={[xt, towerTop + 0.12, zMid]}>
+              <boxGeometry args={[0.80, 0.24, depthZ + 0.36]} />
               <meshStandardMaterial color={0x383e44} roughness={0.65} metalness={0.75} />
             </mesh>
-            <mesh castShadow position={[xt, twY + twH / 2 + 0.20, Z_MON]} rotation={[0, 0, Math.PI / 2]}>
-              <cylinderGeometry args={[0.20, 0.20, 0.65, 14]} />
+            {/* Sheave drum at top */}
+            <mesh castShadow position={[xt, towerTop + 0.34, zFr - 0.04]} rotation={[0, 0, Math.PI / 2]}>
+              <cylinderGeometry args={[0.22, 0.22, 0.65, 12]} />
               <meshStandardMaterial color={0x585f65} roughness={0.52} metalness={0.82} />
             </mesh>
-            <mesh castShadow position={[xt, twY - 0.5, Z_MON + 0.15]}>
-              <cylinderGeometry args={[0.05, 0.05, twH + GHv + 1.5, 8]} />
+            {/* CW guide flanges along back column */}
+            {([-1, 1] as (-1 | 1)[]).map(dx => (
+              <mesh key={dx} castShadow position={[xt + dx * 0.36, towerCY + 0.20, zBk - 0.16]}>
+                <boxGeometry args={[0.10, towerH - 0.60, 0.20]} />
+                <meshStandardMaterial color={0x707878} roughness={0.42} metalness={0.85} />
+              </mesh>
+            ))}
+            {/* Hoist cable: gate top → sheave */}
+            <mesh castShadow
+              position={[xt, (VAG_CY + GHv / 2 + towerTop + 0.34) / 2, zFr - 0.04]}>
+              <cylinderGeometry args={[0.038, 0.038, towerTop + 0.34 - (VAG_CY + GHv / 2), 6]} />
+              <meshStandardMaterial color={0xb0bcc8} roughness={0.08} metalness={0.98} />
+            </mesh>
+            {/* CW cable: sheave → counterweight top */}
+            <mesh castShadow
+              position={[xt, (cwStartY + 1.20 + towerTop + 0.34) / 2, zBk - 0.04]}>
+              <cylinderGeometry args={[0.038, 0.038, towerTop + 0.34 - (cwStartY + 1.20), 6]} />
               <meshStandardMaterial color={0xb0bcc8} roughness={0.08} metalness={0.98} />
             </mesh>
           </group>
         )
       })}
 
-      {/* Traverse beam at top */}
+      {/* Traverse beam connecting both tower tops */}
       <mesh castShadow position={[0, twY + twH / 2, Z_MON]}>
         <boxGeometry args={[VW + 0.65, 0.42, 0.42]} />
         <meshStandardMaterial color={0x585f65} roughness={0.52} metalness={0.82} />
       </mesh>
 
-      {/* ── Counterweights ── */}
+      {/* ── Counterweights (inside tower CW guide) ── */}
       {([-1, 1] as (1 | -1)[]).map(sx => (
-        <group key={sx}>
-          <mesh
-            ref={sx === -1 ? cwLRef : cwRRef}
-            castShadow
-            position={[sx * (VW / 2 - 0.30), cwStartY, Z_MON - 0.70]}
-          >
-            <boxGeometry args={[0.70, 2.4, 0.70]} />
-            <meshStandardMaterial color={0x4a4e50} roughness={0.88} metalness={0.08} />
-          </mesh>
-          <mesh position={[sx * (VW / 2 - 0.30), cwStartY + 1.0, Z_MON - 0.33]}>
-            <boxGeometry args={[0.50, 0.12, 0.04]} />
-            <meshStandardMaterial color={0xd4a010} roughness={0.52} metalness={0.15} emissive={new THREE.Color(0x3a2800)} emissiveIntensity={0.3} />
-          </mesh>
-        </group>
+        <mesh
+          ref={sx === -1 ? cwLRef : cwRRef}
+          key={sx}
+          castShadow
+          position={[sx * (VW / 2 - 0.30), cwStartY, Z_MON - 0.60]}
+        >
+          <boxGeometry args={[0.62, 2.40, 0.48]} />
+          <meshStandardMaterial color={0x4a4e50} roughness={0.88} metalness={0.08} />
+        </mesh>
       ))}
     </group>
   )

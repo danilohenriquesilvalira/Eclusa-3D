@@ -4,6 +4,7 @@ import type { Direction } from '../store/simulation'
 import type { DownstreamGateHandle } from '../components/scene/DownstreamGate'
 import type { UpstreamGateHandle } from '../components/scene/UpstreamGate'
 import type { BoatHandle } from '../components/scene/Boat'
+import type { SailorHandle } from '../components/scene/Sailor'
 
 function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)) }
 
@@ -22,6 +23,7 @@ export interface SequenceRefs {
   downstream: React.RefObject<DownstreamGateHandle>
   upstream: React.RefObject<UpstreamGateHandle>
   boat: React.RefObject<BoatHandle>
+  sailor?: React.RefObject<SailorHandle>
 }
 
 export async function runSubida(refs: SequenceRefs, store: any) {
@@ -53,6 +55,10 @@ export async function runSubida(refs: SequenceRefs, store: any) {
   await refs.downstream.current!.close()
   store.setProgress(50); await sleep(400)
 
+  // Sailor comes out to moor the boat
+  store.pushLog('[ CREW ] Marinheiro a amarrar embarcação · 3 amarras')
+  await refs.sailor?.current?.moor()
+
   // F4 — Fill chamber
   store.setSemJus('red'); store.setSemMon('red')
   store.setStep(`Enchimento da câmara — Δh ${DESNIVEL_REAL.toFixed(0)}m...`)
@@ -80,6 +86,7 @@ export async function runSubida(refs: SequenceRefs, store: any) {
   store.setBst('Saindo')
   store.pushLog('[ NAV ] Embarcação a sair · canal de montante livre')
   store.setProgress(90)
+  await refs.sailor?.current?.release()
   await refs.boat.current!.moveTo(Z_MON - 11)
   store.setProgress(95); await sleep(400)
 
@@ -122,6 +129,10 @@ export async function runDescida(refs: SequenceRefs, store: any) {
   await refs.upstream.current!.close()
   store.setProgress(50); await sleep(400)
 
+  // Sailor comes out to moor the boat
+  store.pushLog('[ CREW ] Marinheiro a amarrar embarcação · 3 amarras')
+  await refs.sailor?.current?.moor()
+
   // F4 — Drain chamber
   store.setSemJus('red'); store.setSemMon('red')
   store.setStep(`Esvaziamento da câmara — Δh ${DESNIVEL_REAL.toFixed(0)}m...`)
@@ -149,6 +160,7 @@ export async function runDescida(refs: SequenceRefs, store: any) {
   store.setBst('Saindo')
   store.pushLog('[ NAV ] Embarcação a sair · rio de jusante livre')
   store.setProgress(90)
+  await refs.sailor?.current?.release()
   await refs.boat.current!.moveTo(Z_JUS + 11)
   store.setProgress(95); await sleep(400)
 
