@@ -423,41 +423,27 @@ export function Chamber() {
       })()}
 
       {/* ── Exterior rivers ── */}
-      {/* Downstream river surface — wide enough to cover full structure + surroundings */}
-      <mesh position={[0, LOW_Y, Z_JUS + 17]}>
-        <boxGeometry args={[CW * 5, 0.28, 36]} />
-        <meshStandardMaterial color={0x1565c0} roughness={0.04} metalness={0.45} transparent opacity={0.88} />
+      {/* Downstream channel — covers full structure width, no overflow into banks */}
+      <mesh position={[0, LOW_Y + 0.05, Z_JUS + 17]}>
+        <boxGeometry args={[CW + 2 * (WT + walkW), 0.28, 36]} />
+        <meshStandardMaterial color={0x1565c0} roughness={0.04} metalness={0.45} transparent opacity={0.90} />
       </mesh>
-      {/* Downstream river bed (gives depth) */}
-      <mesh position={[0, LOW_Y - 4, Z_JUS + 17]}>
-        <boxGeometry args={[CW * 5, 8, 36]} />
+      {/* Downstream channel floor (depth) */}
+      <mesh position={[0, LOW_Y - 3, Z_JUS + 17]}>
+        <boxGeometry args={[CW + 2 * (WT + walkW), 6, 36]} />
         <meshStandardMaterial color={0x0d3a7a} roughness={1.0} />
       </mesh>
 
-      {/* Upstream river surface */}
-      <mesh position={[0, HIGH_Y, Z_MON - 17]}>
-        <boxGeometry args={[CW * 5, 0.28, 36]} />
-        <meshStandardMaterial color={0x1976d2} roughness={0.04} metalness={0.45} transparent opacity={0.88} />
+      {/* Upstream channel — higher water level */}
+      <mesh position={[0, HIGH_Y + 0.05, Z_MON - 17]}>
+        <boxGeometry args={[CW + 2 * (WT + walkW), 0.28, 36]} />
+        <meshStandardMaterial color={0x1976d2} roughness={0.04} metalness={0.45} transparent opacity={0.90} />
       </mesh>
-      {/* Upstream river bed (gives depth) */}
-      <mesh position={[0, HIGH_Y - 4, Z_MON - 17]}>
-        <boxGeometry args={[CW * 5, 8, 36]} />
+      {/* Upstream channel floor (depth) */}
+      <mesh position={[0, HIGH_Y - 3.5, Z_MON - 17]}>
+        <boxGeometry args={[CW + 2 * (WT + walkW), 7, 36]} />
         <meshStandardMaterial color={0x0d3a7a} roughness={1.0} />
       </mesh>
-
-      {/* ── River banks — positioned beyond wider river surface ── */}
-      {([-1, 1] as (1 | -1)[]).map(sx => (
-        <group key={sx}>
-          <mesh castShadow position={[sx * (CW * 2.8 + 2), LOW_Y - 3, Z_JUS + 17]}>
-            <boxGeometry args={[4, 6, 38]} />
-            <meshStandardMaterial color={0x5c6268} roughness={0.96} metalness={0.04} />
-          </mesh>
-          <mesh castShadow position={[sx * (CW * 2.8 + 2), HIGH_Y - 3.5, Z_MON - 17]}>
-            <boxGeometry args={[4, 7, 38]} />
-            <meshStandardMaterial color={0x5c6268} roughness={0.96} metalness={0.04} />
-          </mesh>
-        </group>
-      ))}
 
       {/* ── Trees on right bank ── */}
       {treeDataR.map(([tz, h, type], i) => (
