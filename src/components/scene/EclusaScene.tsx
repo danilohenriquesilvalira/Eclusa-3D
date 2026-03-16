@@ -10,6 +10,7 @@ import { UpstreamGate, type UpstreamGateHandle } from './UpstreamGate'
 import { Boat, type BoatHandle } from './Boat'
 import { TrafficLights } from './TrafficLights'
 import { Sailor, type SailorHandle } from './Sailor'
+import { Seagulls } from './Seagulls'
 import { LOW_Y, HIGH_Y } from '../../constants'
 import { useSimStore } from '../../store/simulation'
 import { runSubida, runDescida } from '../../lib/sequences'
@@ -124,6 +125,7 @@ function SceneSetup() {
       <Boat ref={boatRef} />
       <TrafficLights />
       <Sailor ref={sailorRef} />
+      <Seagulls />
     </>
   )
 }
