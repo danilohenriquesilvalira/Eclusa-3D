@@ -206,7 +206,7 @@ export const Boat = forwardRef<BoatHandle>((_, ref) => {
 
   const half = BL / 2
   const mZ   = half - 1.8   // mast Z (toward bow)
-  const fnZ  = -half + 4.2  // funnel Z (toward stern)
+  const fnZ  = -half + 4.5  // funnel Z (toward stern)
 
   return (
     <group ref={groupRef} position={[0, LOW_Y, Z_JUS + 16]}>
@@ -226,29 +226,56 @@ export const Boat = forwardRef<BoatHandle>((_, ref) => {
         <boxGeometry args={[BW + 0.10, 0.15, BL * 0.78]} />
         <meshStandardMaterial color={0xcc2810} roughness={0.52} metalness={0.12} />
       </mesh>
+      {/* Blue accent stripe just above red */}
+      <mesh position={[0, FB * 0.44 + 0.135, 0]}>
+        <boxGeometry args={[BW + 0.08, 0.12, BL * 0.78]} />
+        <meshStandardMaterial color={0x1a3a8a} roughness={0.45} metalness={0.20} />
+      </mesh>
 
       {/* ── DECK ────────────────────────────────────────── */}
       <mesh position={[0, DY + 0.04, 0]} castShadow>
         <boxGeometry args={[BW - 0.08, 0.09, BL - 0.90]} />
-        <meshStandardMaterial color={0xb89a60} roughness={0.83} metalness={0} />
+        <meshStandardMaterial color={0xc8b882} roughness={0.83} metalness={0} />
       </mesh>
-      {/* Teak planks */}
+      {/* Dark deck seam lines */}
       {[-1.7, -0.85, 0, 0.85, 1.7].map((x, i) => (
         <mesh key={`pk${i}`} position={[x, DY + 0.09, 0]}>
-          <boxGeometry args={[0.046, 0.018, BL - 1.1]} />
-          <meshStandardMaterial color={0x8a7040} roughness={0.90} metalness={0} />
+          <boxGeometry args={[0.04, 0.015, BL - 1.1]} />
+          <meshStandardMaterial color={0x7a6030} roughness={0.90} metalness={0} />
         </mesh>
       ))}
 
-      {/* ── MAIN CABIN (deck 1) ─────────────────────────── */}
+      {/* ── MAIN CABIN (deck 1) — panoramic window strips ── */}
       <mesh castShadow position={[0, C1B + C1H / 2, 0.4]}>
         <boxGeometry args={[C1HW * 2, C1H, BL - 1.8]} />
-        <meshStandardMaterial color={0xf2f0ee} roughness={0.42} metalness={0.05} />
+        <meshStandardMaterial color={0xf5f4f0} roughness={0.42} metalness={0.05} />
       </mesh>
-      {/* Port windows */}
-      {winRow(-C1HW - 0.04, C1B + C1H * 0.50, -half * 0.64 + 0.4, 5, (BL - 3.2) / 4.5)}
-      {/* Stbd windows */}
-      {winRow( C1HW + 0.04, C1B + C1H * 0.50, -half * 0.64 + 0.4, 5, (BL - 3.2) / 4.5)}
+      {/* Panoramic window strip – Port */}
+      <mesh position={[-(C1HW + 0.04), C1B + C1H * 0.52, 0.4]}>
+        <boxGeometry args={[0.06, 0.80, BL - 3.0]} />
+        <meshStandardMaterial color={0x7ab8d8} roughness={0.05} metalness={0.70} transparent opacity={0.72} />
+      </mesh>
+      <mesh position={[-(C1HW + 0.04), C1B + C1H * 0.52 + 0.425, 0.4]}>
+        <boxGeometry args={[0.07, 0.05, BL - 3.0]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
+      <mesh position={[-(C1HW + 0.04), C1B + C1H * 0.52 - 0.425, 0.4]}>
+        <boxGeometry args={[0.07, 0.05, BL - 3.0]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
+      {/* Panoramic window strip – Starboard */}
+      <mesh position={[(C1HW + 0.04), C1B + C1H * 0.52, 0.4]}>
+        <boxGeometry args={[0.06, 0.80, BL - 3.0]} />
+        <meshStandardMaterial color={0x7ab8d8} roughness={0.05} metalness={0.70} transparent opacity={0.72} />
+      </mesh>
+      <mesh position={[(C1HW + 0.04), C1B + C1H * 0.52 + 0.425, 0.4]}>
+        <boxGeometry args={[0.07, 0.05, BL - 3.0]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
+      <mesh position={[(C1HW + 0.04), C1B + C1H * 0.52 - 0.425, 0.4]}>
+        <boxGeometry args={[0.07, 0.05, BL - 3.0]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
 
       {/* ── DECK 2 OVERHANG ─────────────────────────────── */}
       <mesh position={[0, D2Y + 0.06, 0.4]} castShadow>
@@ -259,32 +286,131 @@ export const Boat = forwardRef<BoatHandle>((_, ref) => {
       {/* ── UPPER CABIN (deck 2) ────────────────────────── */}
       <mesh castShadow position={[0, C2B + C2H / 2, 0.3]}>
         <boxGeometry args={[C2HW * 2, C2H, BL - 3.2]} />
-        <meshStandardMaterial color={0xf2f0ee} roughness={0.42} metalness={0.05} />
+        <meshStandardMaterial color={0xf0eeea} roughness={0.42} metalness={0.05} />
       </mesh>
-      {winRow(-C2HW - 0.04, C2B + C2H * 0.50, -half * 0.50 + 0.4, 4, (BL - 5.0) / 3.6)}
-      {winRow( C2HW + 0.04, C2B + C2H * 0.50, -half * 0.50 + 0.4, 4, (BL - 5.0) / 3.6)}
+      {/* Blue decorative stripe at base of upper cabin */}
+      <mesh position={[0, C2B + 0.04, 0.3]}>
+        <boxGeometry args={[C2HW * 2 + 0.01, 0.08, BL - 3.2]} />
+        <meshStandardMaterial color={0x1a3a8a} roughness={0.40} metalness={0.15} />
+      </mesh>
+      {/* Panoramic windows – Port upper */}
+      <mesh position={[-(C2HW + 0.04), C2B + C2H * 0.52, 0.3]}>
+        <boxGeometry args={[0.06, 0.72, BL - 4.5]} />
+        <meshStandardMaterial color={0x7ab8d8} roughness={0.05} metalness={0.70} transparent opacity={0.72} />
+      </mesh>
+      <mesh position={[-(C2HW + 0.04), C2B + C2H * 0.52 + 0.385, 0.3]}>
+        <boxGeometry args={[0.07, 0.05, BL - 4.5]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
+      <mesh position={[-(C2HW + 0.04), C2B + C2H * 0.52 - 0.385, 0.3]}>
+        <boxGeometry args={[0.07, 0.05, BL - 4.5]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
+      {/* Panoramic windows – Starboard upper */}
+      <mesh position={[(C2HW + 0.04), C2B + C2H * 0.52, 0.3]}>
+        <boxGeometry args={[0.06, 0.72, BL - 4.5]} />
+        <meshStandardMaterial color={0x7ab8d8} roughness={0.05} metalness={0.70} transparent opacity={0.72} />
+      </mesh>
+      <mesh position={[(C2HW + 0.04), C2B + C2H * 0.52 + 0.385, 0.3]}>
+        <boxGeometry args={[0.07, 0.05, BL - 4.5]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
+      <mesh position={[(C2HW + 0.04), C2B + C2H * 0.52 - 0.385, 0.3]}>
+        <boxGeometry args={[0.07, 0.05, BL - 4.5]} />
+        <meshStandardMaterial color={0xddd8cc} roughness={0.40} metalness={0.10} />
+      </mesh>
 
-      {/* ── WHEELHOUSE ──────────────────────────────────── */}
+      {/* ── WHEELHOUSE / BRIDGE ─────────────────────────── */}
       <mesh castShadow position={[0, BRB + BRH / 2, half - 2.0]}>
         <boxGeometry args={[BRHW * 2, BRH, 2.8]} />
-        <meshStandardMaterial color={0xf2f0ee} roughness={0.42} metalness={0.05} />
+        <meshStandardMaterial color={0xf5f4f0} roughness={0.42} metalness={0.05} />
       </mesh>
       {/* Bridge front window */}
       <mesh position={[0, BRB + BRH * 0.53, half - 0.62]}>
         <boxGeometry args={[BRHW * 2 - 0.28, 0.70, 0.07]} />
-        <meshStandardMaterial color={0x88c8ee} roughness={0.02} metalness={0.60} transparent opacity={0.78} />
+        <meshStandardMaterial color={0x7ab8d8} roughness={0.02} metalness={0.65} transparent opacity={0.68} />
       </mesh>
       {/* Bridge side windows */}
       {([-1, 1] as (1|-1)[]).map(s => (
         <mesh key={`bsw${s}`} position={[s * BRHW, BRB + BRH * 0.53, half - 2.0]}>
           <boxGeometry args={[0.07, 0.65, 2.1]} />
-          <meshStandardMaterial color={0x88c8ee} roughness={0.02} metalness={0.60} transparent opacity={0.78} />
+          <meshStandardMaterial color={0x7ab8d8} roughness={0.02} metalness={0.65} transparent opacity={0.68} />
         </mesh>
       ))}
-      {/* Bridge roof */}
+      {/* Bridge roof – blue */}
       <mesh position={[0, BRT + 0.04, half - 2.0]}>
         <boxGeometry args={[BRHW * 2 + 0.20, 0.08, 3.0]} />
-        <meshStandardMaterial color={0x1e3888} roughness={0.58} metalness={0.06} />
+        <meshStandardMaterial color={0x1a3a8a} roughness={0.50} metalness={0.10} />
+      </mesh>
+      {/* Radar platform on bridge roof */}
+      <mesh position={[0, BRT + 0.11, half - 2.0]}>
+        <boxGeometry args={[BRHW * 2 + 0.50, 0.06, 3.0]} />
+        <meshStandardMaterial color={0xc8c4ba} roughness={0.50} metalness={0.20} />
+      </mesh>
+
+      {/* ── SUN DECK ────────────────────────────────────── */}
+      {/* Open sun deck surface */}
+      <mesh position={[0, BRT + 0.06, 0]} castShadow>
+        <boxGeometry args={[BW - 0.2, 0.08, BL - 2.0]} />
+        <meshStandardMaterial color={0xd4c890} roughness={0.75} metalness={0} />
+      </mesh>
+      {/* Canvas awnings × 3 */}
+      {[-4, 0, 4].map((z, i) => (
+        <group key={`aw${i}`}>
+          <mesh position={[0, BRT + 1.8, z]}>
+            <boxGeometry args={[BW - 0.5, 0.06, 3.5]} />
+            <meshStandardMaterial color={0xf5f0e0} roughness={0.80} metalness={0} />
+          </mesh>
+          {([
+            [-(BW / 2 - 0.40), z - 1.5],
+            [-(BW / 2 - 0.40), z + 1.5],
+            [ (BW / 2 - 0.40), z - 1.5],
+            [ (BW / 2 - 0.40), z + 1.5],
+          ] as [number, number][]).map(([px, pz], pi) => (
+            <mesh key={pi} position={[px, BRT + 0.06 + 0.875, pz]}>
+              <cylinderGeometry args={[0.03, 0.03, 1.75, 6]} />
+              <meshStandardMaterial color={0xc0bfba} roughness={0.30} metalness={0.70} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+      {/* Deck chairs */}
+      {[-4, 2].flatMap((z, ci) =>
+        ([-1, 1] as (1|-1)[]).map((s, si) => (
+          <mesh key={`ch${ci}${si}`} position={[s * (BW / 2 - 0.55), BRT + 0.14, z]}>
+            <boxGeometry args={[0.45, 0.08, 0.85]} />
+            <meshStandardMaterial color={0x2244aa} roughness={0.70} metalness={0.10} />
+          </mesh>
+        ))
+      )}
+
+      {/* ── FUNNEL ──────────────────────────────────────── */}
+      {/* Main funnel body */}
+      <mesh castShadow position={[0.4, C2B + 1.1, fnZ]}>
+        <cylinderGeometry args={[0.22, 0.28, 2.2, 12]} />
+        <meshStandardMaterial color={0xf0eeea} roughness={0.45} metalness={0.10} />
+      </mesh>
+      {/* Blue band */}
+      <mesh position={[0.4, C2B + 1.1 + 0.55, fnZ]}>
+        <cylinderGeometry args={[0.295, 0.295, 0.45, 12]} />
+        <meshStandardMaterial color={0x1a3a8a} roughness={0.40} metalness={0.15} />
+      </mesh>
+      {/* Red thin band above blue */}
+      <mesh position={[0.4, C2B + 1.1 + 0.85, fnZ]}>
+        <cylinderGeometry args={[0.293, 0.293, 0.15, 12]} />
+        <meshStandardMaterial color={0xcc2810} roughness={0.40} metalness={0.12} />
+      </mesh>
+      {/* Funnel cap */}
+      <mesh position={[0.4, C2B + 2.28, fnZ]}>
+        <cylinderGeometry args={[0.20, 0.22, 0.16, 12]} />
+        <meshStandardMaterial color={0x1a1816} roughness={0.70} metalness={0.20} />
+      </mesh>
+      {/* Smoke suggestion */}
+      <mesh position={[0.4, C2B + 2.60, fnZ]}>
+        <sphereGeometry args={[0.12, 8, 8]} />
+        <meshStandardMaterial color={0xd0cdc8}
+          emissive={new THREE.Color(0xb0b0b0)} emissiveIntensity={0.3}
+          transparent opacity={0.55} roughness={1.0} metalness={0} />
       </mesh>
 
       {/* ── MAST ────────────────────────────────────────── */}
@@ -301,27 +427,43 @@ export const Boat = forwardRef<BoatHandle>((_, ref) => {
         <cylinderGeometry args={[0.036, 0.036, 0.25, 6]} />
         <meshStandardMaterial color={0xb0bcc8} roughness={0.10} metalness={0.95} />
       </mesh>
+      {/* Second smaller radar dish */}
+      <mesh position={[0, BRT + 3.2, mZ]}>
+        <boxGeometry args={[0.50, 0.08, 0.14]} />
+        <meshStandardMaterial color={0x505860} roughness={0.28} metalness={0.90} />
+      </mesh>
       {/* Horn */}
-      <mesh position={[BRHW - 0.1, BRT + 0.65, half - 0.8]} rotation={[Math.PI/2, 0, 0]}>
+      <mesh position={[BRHW - 0.1, BRT + 0.65, half - 0.8]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.06, 0.09, 0.30, 8]} />
         <meshStandardMaterial color={0xd0c8b0} roughness={0.35} metalness={0.80} />
       </mesh>
 
-      {/* ── FUNNEL ──────────────────────────────────────── */}
-      <mesh castShadow position={[0.5, C2B + 0.90, fnZ]}>
-        <cylinderGeometry args={[0.18, 0.24, 1.90, 12]} />
-        <meshStandardMaterial color={0x181614} roughness={0.78} metalness={0.15} />
-      </mesh>
-      <mesh position={[0.5, C2B + 0.90 + 0.97, fnZ]}>
-        <cylinderGeometry args={[0.25, 0.19, 0.12, 12]} />
-        <meshStandardMaterial color={0x181614} roughness={0.78} metalness={0.15} />
-      </mesh>
+      {/* ── LIFEBOATS — 2 orange rescue boats on davits ─── */}
+      {([-1, 1] as (1|-1)[]).map(s => (
+        <group key={`lb${s}`}>
+          {/* Lifeboat hull */}
+          <mesh position={[s * (C1HW + 0.18), C1T + 0.30, 0]}>
+            <boxGeometry args={[0.28, 0.28, 1.60]} />
+            <meshStandardMaterial color={0xff6600} roughness={0.60} metalness={0.10} />
+          </mesh>
+          {/* Lifeboat cabin top */}
+          <mesh position={[s * (C1HW + 0.18), C1T + 0.53, 0]}>
+            <boxGeometry args={[0.26, 0.18, 1.50]} />
+            <meshStandardMaterial color={0xff6600} roughness={0.60} metalness={0.10} />
+          </mesh>
+          {/* Davit arm */}
+          <mesh position={[s * (C1HW + 0.18), C1T + 0.895, 0]}>
+            <boxGeometry args={[0.04, 0.55, 0.04]} />
+            <meshStandardMaterial color={0xb0b8c0} roughness={0.20} metalness={0.85} />
+          </mesh>
+        </group>
+      ))}
 
       {/* ── RAILINGS ────────────────────────────────────── */}
       {railing(-1, DY + 0.08, -half + 0.9, half - 0.9, 9)}
       {railing( 1, DY + 0.08, -half + 0.9, half - 0.9, 9)}
       {/* Bow railing (connecting port/stbd across bow) */}
-      <mesh position={[0, DY + 0.58, half - 0.5]} rotation={[0, 0, Math.PI/2]}>
+      <mesh position={[0, DY + 0.58, half - 0.5]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.020, 0.020, BW * 0.72, 6]} />
         <meshStandardMaterial color={0xb0bcc8} roughness={0.12} metalness={0.94} />
       </mesh>
@@ -373,14 +515,28 @@ export const Boat = forwardRef<BoatHandle>((_, ref) => {
         ))
       )}
 
-      {/* ── PORTUGUESE FLAG ─────────────────────────────── */}
-      <mesh position={[-0.20, BRT + 4.06, mZ]}>
-        <boxGeometry args={[0.50, 0.33, 0.016]} />
+      {/* ── PORTUGUESE FLAG (improved) ──────────────────── */}
+      {/* Flag pole: BRT+3.88 → BRT+4.40, center at BRT+4.14, height 0.52 */}
+      <mesh position={[0, BRT + 4.14, mZ]}>
+        <cylinderGeometry args={[0.012, 0.012, 0.52, 6]} />
+        <meshStandardMaterial color={0xb0b8c0} roughness={0.20} metalness={0.90} />
+      </mesh>
+      {/* Green stripe (left 40%) */}
+      <mesh position={[-0.21, BRT + 4.15, mZ]}>
+        <boxGeometry args={[0.28, 0.46, 0.015]} />
         <meshStandardMaterial color={0x006600} roughness={0.80} />
       </mesh>
-      <mesh position={[0.09, BRT + 4.06, mZ]}>
-        <boxGeometry args={[0.27, 0.33, 0.016]} />
+      {/* Red stripe (right 60%) */}
+      <mesh position={[0.14, BRT + 4.15, mZ]}>
+        <boxGeometry args={[0.42, 0.46, 0.015]} />
         <meshStandardMaterial color={0xcc0000} roughness={0.80} />
+      </mesh>
+      {/* Armillary sphere (coat of arms) */}
+      <mesh position={[0, BRT + 4.15, mZ - 0.009]}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshStandardMaterial color={0xf0c000}
+          emissive={new THREE.Color(0xd4a800)} emissiveIntensity={0.5}
+          roughness={0.40} metalness={0.60} />
       </mesh>
 
     </group>
