@@ -1,6 +1,6 @@
 import React from 'react'
 import * as THREE from 'three'
-import { FLOOR_Y, LOW_Y, WALL_TOP, WALL_H, CW, CL, WT, Z_JUS, Z_MON } from '../../constants'
+import { FLOOR_Y, LOW_Y, HIGH_Y, WALL_TOP, WALL_H, CW, CL, WT, Z_JUS, Z_MON } from '../../constants'
 
 const wetH = LOW_Y - FLOOR_Y     // 1.5
 const dryH = WALL_TOP - LOW_Y    // 12.5
